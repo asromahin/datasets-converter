@@ -5,7 +5,6 @@ from typing import Union, List
 @dataclass
 class BaseInfo:
     name: Union[str, None]
-    id: int
 
 
 @dataclass
@@ -31,7 +30,11 @@ class ImagesInfo(BaseInfo):
     images: List[ImageInfo]
 
     def __add__(self, other):
-        return ImagesInfo(images=self.images + other.images, id=self.id, name=self.name)
+        return ImagesInfo(images=self.images + other.images, name=self.name)
+
+    def set_split(self, split: str):
+        for i in range(len(self.images)):
+            self.images[i].split = split
 
 
 

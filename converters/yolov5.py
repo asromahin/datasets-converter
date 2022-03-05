@@ -1,10 +1,7 @@
-import pandas as pd
 from tqdm import tqdm
 import os
-import cv2
-import json
 from shutil import copyfile
-from collections import defaultdict
+import yaml
 
 from model import DetectionInfo, ImageInfo, ImagesInfo
 
@@ -19,6 +16,8 @@ def to_yolov5(images_info: ImagesInfo, save_path: str):
 
     val_path_images = os.path.join(val_path, 'images')
     val_path_labels = os.path.join(val_path, 'labels')
+
+    dataset_path = os.path.join(save_path, 'dataset.yaml')
 
     os.makedirs(train_path_images, exist_ok=True)
     os.makedirs(train_path_labels, exist_ok=True)
@@ -55,3 +54,14 @@ def to_yolov5(images_info: ImagesInfo, save_path: str):
         res_data = '\n'.join(lines)
         with open(labels_path, 'w') as f:
             f.write(res_data)
+
+    dict_file = {
+        'path': save_path,
+        'train': train_path,
+        'val': val_path,
+        'nc': len(cat_code.keys()),
+        'names': list(cat_code.keys()),
+    }
+    # print(dict_file)
+    with open(dataset_path, 'w') as f:
+        yaml.dump(dict_file, f)
