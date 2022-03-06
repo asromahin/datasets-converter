@@ -85,7 +85,7 @@ def from_yolov5_detections(images_folder, txt_folder, code_to_name, split='test'
         detections = []
         with open(txt_path, 'r') as f:
             data = f.read()
-            lines = data.split('\n')
+            lines = data.split('\n')[:-1]
             for line in lines:
                 name_code, center_x, center_y, w, h, conf = line.split('\t')
                 name_code = int(name_code)
