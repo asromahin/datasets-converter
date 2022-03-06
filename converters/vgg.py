@@ -71,7 +71,7 @@ def from_vgg_csv(csv_path, images_path, split='train'):
     return ImagesInfo(name='vgg_dataset', images=res_images)
 
 
-def to_vgg_csv(images_info: ImagesInfo, save_path: str):
+def to_vgg_csv(images_info: ImagesInfo, save_path: str, save_images: bool = True):
     df_path = os.path.join(save_path, 'result.csv')
     images_path = os.path.join(save_path, 'images')
 
@@ -81,7 +81,8 @@ def to_vgg_csv(images_info: ImagesInfo, save_path: str):
     for image in tqdm(images_info.images):
         image: ImageInfo
         new_path = os.path.join(images_path, image.filename)
-        copyfile(image.path, new_path)
+        if save_images:
+            copyfile(image.path, new_path)
         image_row = {
             "filename": image.filename,
             "file_size": os.path.getsize(image.path),
