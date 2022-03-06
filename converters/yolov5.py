@@ -80,24 +80,26 @@ def from_yolov5_detections(images_folder, txt_folder, code_to_name, split='test'
         im_path = os.path.join(images_folder, image_name)
 
         im = cv2.imread(im_path)
+        if im is None:
+            continue
         im_width = im.shape[1]
         im_height = im.shape[0]
         detections = []
-        with open(txt_path, 'r') as f:
-            data = f.read()
-            lines = data.split('\n')[:-1]
-            for line in lines:
-                print(line)
-                name_code, center_x, center_y, w, h, conf = line.split('\t')
-                name_code = int(name_code)
-                center_x = float(center_x)
-                center_y = float(center_y)
-                w = float(w)
-                h = float(h)
-                conf = float(conf)
-                name = code_to_name[name_code]
-                det = DetectionInfo(name=name, x=center_x, y=center_y, w=w, h=h)
-                detections.append(det)
+        if os.path.exists(txt_path):
+            with open(txt_path, 'r') as f:
+                data = f.read()
+                lines = data.split('\n')[:-1]
+                for line in lines:
+                    name_code, center_x, center_y, w, h, conf = line.split(' ')
+                    name_code = int(name_code)
+                    center_x = float(center_x)
+                    center_y = float(center_y)
+                    w = float(w)
+                    h = float(h)
+                    conf = float(conf)
+                    name = code_to_name[name_code]
+                    det = DetectionInfo(name=name, x=center_x, y=center_y, w=w, h=h)
+                    detections.append(det)
         images.append(
             ImageInfo(
                 name=None,
@@ -109,11 +111,16 @@ def from_yolov5_detections(images_folder, txt_folder, code_to_name, split='test'
                 split=split,
             )
         )
-        images_info = ImagesInfo(name='yolov5_detections', images=images)
-        return images_info
+    images_info = ImagesInfo(name='yolov5_detections', images=images)
+    return images_info
 
 
 if __name__ == '__main__':
-    from_yolov5_detections(
-
+    res = from_yolov5_detections(
+        r'C:\datasets\kaggle\happy-whale-and-dolphin\part1_train',
+        r'C:\Users\asrom\Downloads\labels',
+        {
+            0: 'head',
+            1: 'tail',
+        }
     )
